@@ -1,0 +1,62 @@
+﻿@page "/Delete/{Id}"
+@using Article.Data
+@inject ArticleService articleService
+@inject NavigationManager NavigationManager
+
+<h2>Delete Article</h2>
+<hr />
+<h3>Are you sure want to delete this?</h3>
+<form>
+    <div class="row">
+        <div class=" col-md-8">
+            <div class="form-group">
+                <label>Id:</label>
+                <label>@obj.Id</label>
+            </div>
+            <div class="form-group">
+                <label>Nom:</label>
+                <label>@obj.Nom</label>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <label>@obj.Description</label>
+            </div>
+            <div class="form-group">
+                <label>Prix:</label>
+                <label>@obj.Prix</label>
+            </div>
+            <div class="form-group">
+                <label>Disponible:</label>
+                <label>@obj.Disponible</label>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-danger" @onclick="@Delete" value="Delete" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    Article obj = new Article();
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await Task.Run(() => articleService.GetArticleAsync(Convert.ToInt32(Id)));
+    }
+    protected async void Delete()
+    {
+        await articleService.DeleteArticleAsync(obj);
+        NavigationManager.NavigateTo("Articles");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Articles");
+    }
+}
